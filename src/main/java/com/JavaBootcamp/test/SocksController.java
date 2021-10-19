@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 @RestController
 class SocksController {
     @Autowired
@@ -28,8 +29,8 @@ class SocksController {
     @GetMapping("/socks")
     CollectionModel<EntityModel<Socks>> all() {
 
-        List<EntityModel<Socks>> socks = repository.findAll().stream() //
-                .map(assembler::toModel) //
+        List<EntityModel<Socks>> socks = repository.findAll().stream()
+                .map(assembler :: toModel)
                 .collect(Collectors.toList());
 
         return CollectionModel.of(socks, linkTo(methodOn(SocksController.class).all()).withSelfRel());
@@ -56,6 +57,7 @@ class SocksController {
                 .body(entityModel);
     }
 
+
     @PostMapping("/api/socks/outcome")
     ResponseEntity<?> outcomeSocks(@RequestBody Socks newSocks) {
         Socks socksForSave;
@@ -80,12 +82,10 @@ class SocksController {
         } else throw new TheseSocksNotFoundException();
     }
 
-    // Single item
-
 
     @GetMapping("/socks/{id}")
     EntityModel<Socks> one(@PathVariable Long id) {
-        Socks socks = repository.findById(id) //
+        Socks socks = repository.findById(id) 
                 .orElseThrow(() -> new SocksNotFoundException(id));
 
         return assembler.toModel(socks);
@@ -93,29 +93,26 @@ class SocksController {
 
 
     @GetMapping("/api/socks")
-    CollectionModel<Socks> request(@RequestBody Socks socks, @RequestParam String color, @RequestParam Operation operation, @RequestParam byte cottonPart ) {
-        List<Socks> socksList=repository.findAll();
+    int request(@RequestParam String color, @RequestParam Operation operation, @RequestParam byte cottonPart ) {
+        List<Socks> socksList = repository.findAll();
+        int quantity = 0;
         switch(operation){
             case moreThan:
-               socksList.stream()
-                       .filter(filtredForCottonPart -> socks.getCottonPart()<cottonPart)
-                       .filter(filtredForColor -> socks.getColor()==color)
-                       .map(assembler::toModel).collect(Collectors.toList());
+                quantity = socksList.stream()
+                        .filter(socks -> socks.getCottonPart() > cottonPart && socks.getColor().equals(color)).mapToInt(Socks::getQuantity).sum();
                 break;
             case lessThan:
-                socksList.stream()
-                        .filter(filtredSocks ->socks.getCottonPart()>cottonPart)
-                        .filter(filtredForColor -> socks.getColor()==color)
-                        .map(assembler::toModel).collect(Collectors.toList());
+                quantity = socksList.stream()
+                        .filter(socks -> socks.getCottonPart() < cottonPart && socks.getColor().equals(color)).mapToInt(Socks::getQuantity).sum();
                 break;
             case equals:
-                socksList.stream()
-                        .filter(filtredSocks ->socks.getCottonPart()==cottonPart)
-                        .filter(filtredForColor -> socks.getColor()==color)
-                        .map(assembler::toModel).collect(Collectors.toList());
+                quantity = socksList.stream()
+                        .filter(socks -> socks.getCottonPart() == cottonPart && socks.getColor().equals(color)).mapToInt(Socks::getQuantity).sum();
                 break;
         }
 
-        return CollectionModel.of(socksList, linkTo(methodOn(SocksController.class).all()).withSelfRel());
+        Socks s = new Socks();
+        s.setQuantity(quantity);
+        return s.getQuantity();
     }
 }

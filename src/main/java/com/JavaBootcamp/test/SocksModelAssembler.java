@@ -1,7 +1,6 @@
 package com.JavaBootcamp.test;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;
@@ -11,7 +10,7 @@ class SocksModelAssembler implements RepresentationModelAssembler<Socks, EntityM
     @Override
     public EntityModel<Socks> toModel(Socks socks) {
 
-        return EntityModel.of(socks, //
+        return EntityModel.of(socks,
                 linkTo(methodOn(SocksController.class).one(socks.getId())).withSelfRel(),
                 linkTo(methodOn(SocksController.class).all()).withRel("socks"));
     }
