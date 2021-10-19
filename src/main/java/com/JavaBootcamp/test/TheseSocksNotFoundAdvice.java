@@ -7,11 +7,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ControllerAdvice
-public class SocksNotFoundAdvice {
+
+public class TheseSocksNotFoundAdvice {
     @ResponseBody
-    @ExceptionHandler(SocksNotFoundException.class)
+    @ExceptionHandler(TheseSocksNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    String socksNotFoundHandler(SocksNotFoundException ex) {
+    String socksNotFoundHandler(TheseSocksNotFoundException ex) {
         return ex.getMessage();
     }
 }

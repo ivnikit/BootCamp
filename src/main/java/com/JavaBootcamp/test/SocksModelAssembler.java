@@ -1,13 +1,13 @@
 package com.JavaBootcamp.test;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;
 
 @Component
 class SocksModelAssembler implements RepresentationModelAssembler<Socks, EntityModel<Socks>> {
-
     @Override
     public EntityModel<Socks> toModel(Socks socks) {
 
